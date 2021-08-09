@@ -10,8 +10,8 @@
 </head>
 
 <body>
-    <section class="hero is-link">
-        <div class="hero-body">
+    <section class="hero is-link" >
+        <div class="hero-body" >
             <div class="container">
                 <h1 class="title">
                     What's the weather like?
@@ -19,6 +19,7 @@
             </div>
         </div>
     </section>
+
     <section class="section">
         <div class="container">
             <div class="columns">
@@ -42,9 +43,9 @@
 
     <section class="section">
         <div class="container">
-            <div class="columns">
-                <div class="column is-offset-4 is-4">
+            <div class="columns is-multiline is-mobile">
                     {% for weather in weathers %}
+                    <div class="column is-4">
                     <div class="box">
                         <article class="media">
                             <div class="media-left">
@@ -63,9 +64,9 @@
                                 </div>
                             </div>
                         </article>
-                    </div>
-                    {% endfor %}
-                </div>
+                    </div></div>
+                    {% endfor%}
+                
             </div>
         </div>
     </section>
