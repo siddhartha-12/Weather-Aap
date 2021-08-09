@@ -4,6 +4,13 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///weather.db'
+database = SQLAlchemy(app)
+
+class city(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    name = database.Column(database.Integer, nullable=False)
+
 
 @app.route('/')
 def index():
