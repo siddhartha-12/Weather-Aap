@@ -53,9 +53,9 @@ def index_post():
                 database.session.add(nc_object)
                 database.session.commit()
             else:
-                flash_message = 'City not found'
+                flash_message = 'While we appriciate your input, but we are unable to service this city. Either the city does not exist or we do not have weather stations nearby'
         else:
-            flash_message = 'Message already on dashboard'
+            flash_message = 'City already on dashboard'
     if flash_message:
         flash(flash_message,'alert')
     else:
@@ -63,6 +63,15 @@ def index_post():
 
     return redirect(url_for('index'))
     
+@app.route('/delete/<name>')
+def delete_city(name):
+    city = City.query.filter_by(name=name).first()
+    database.session.delete(city)
+    database.session.commit()
+
+    flash(f'Removed { city.name }', 'success')
+    return redirect(url_for('index'))
+
 
 
 

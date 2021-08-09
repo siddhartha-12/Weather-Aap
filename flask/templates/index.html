@@ -69,13 +69,19 @@
                                     <p>
                                         <span class="title">{{ weather.city.name }}</span>
                                         <br>
-                                        <span class="subtitle">{{ weather.tempreture }}</span>
+                                        <span class="subtitle">{{ weather.tempreture }}° C</span>
                                         <br> {{ weather.description }}
                                     </p>
                                 </div>
                             </div>
+                            <div class="media-right">
+                                <a href="{{ url_for('delete_city', name=weather.city.name) }}">
+                                    <button class="delete"></button>
+                                </a>
+                            </div>
                         </article>
-                    </div></div>
+                    </div>
+                    </div>
                     {% endfor%}
                 
             </div>
