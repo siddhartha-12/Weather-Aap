@@ -9,23 +9,35 @@
         name: git
         state: present
         update_cache: yes
+
     - name : Install python pip3
       apt:
         name: python3-pip
         state: present
         update_cache: yes
 
-    - name: install flask with pip
-      pip: name=flask
-
+    - name : Install Flask
+      pip:
+        name: flask
+        executable: pip3
+      
     - name: install flask requests
-      pip: name=requests
+      pip: 
+        name: requests
+        executable: pip3
+
 
     - name: install flask_SQLAlchemy
-      pip: name=Flask_SQLAlchemy
+      pip: 
+        name : Flask_SQLAlchemy
+        executable: pip3
+
 
     - name: install python-dotenv
-      pip: name=python-dotenv
+      pip: 
+        name : python-dotenv
+        executable: pip3
+        
 
     - name: Clone a Web App repo
       ansible.builtin.git:
