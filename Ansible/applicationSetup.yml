@@ -1,0 +1,62 @@
+---
+- name : Setup Application Environment
+  hosts: webserver
+  remote_user: ansible
+  become: True
+  tasks:
+    - name : Install Git
+      apt:
+        name: git
+        state: present
+        update_cache: yes
+    - name : Install python pip3
+      apt:
+        name: python3-pip
+        state: present
+        update_cache: yes
+
+    - name: install flask with pip
+      pip: name=flask
+
+    - name: install flask requests
+      pip: name=requests
+
+    - name: install flask_SQLAlchemy
+      pip: name=Flask_SQLAlchemy
+
+    - name: install python-dotenv
+      pip: name=python-dotenv
+
+    - name: Clone a Web App repo
+      ansible.builtin.git:
+        repo: https://github.com/siddhartha-12/Weather-App.git
+        dest: /var/flask-app
+
+    - name: Copy service file to systemd
+      ansible.builtin.copy:
+        remote_src: yes
+        src: /var/flask-app/flask/flaskapp.service
+        dest: /etc/systemd/system/flaskapp.service
+        mode: '0644'
+    
+    - name: Reload service reload
+      ansible.builtin.systemd:
+        state: restarted
+        daemon_reload: yes
+        name: flaskapp.service
+    
+    - name: Enable a timer unit for dnf-automatic
+      ansible.builtin.systemd:
+        name: flaskapp.service
+        state: started
+        enabled: yes
+    
+    - name: Make sure a service unit is running
+      ansible.builtin.systemd:
+        state: started
+        name: flaskapp.service
+
+    # - name: Start Flask
+    #   shell: "flask run"
+    #   environment:
+    #     FLASK_APP: /var/flask-app/flask/app.py
