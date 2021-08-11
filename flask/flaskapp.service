@@ -1,0 +1,11 @@
+[Unit]
+Description=Python flask web app
+After=multi-user.target
+
+[Service]
+WorkingDirectory=/var/flask-app/flask
+ExecStart=/usr/bin/python3 /var/flask-app/flask/app.py
+Type=idle
+
+[Install]
+WantedBy=multi-user.target
