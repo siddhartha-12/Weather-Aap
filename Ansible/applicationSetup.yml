@@ -65,4 +65,7 @@
         repo: https://github.com/siddhartha-12/Weather-App.git
         dest: /var/flask-app
 
-    
+    - name: Install "forever" package.
+      npm:
+        name: forever
+        global: yes
