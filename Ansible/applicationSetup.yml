@@ -15,6 +15,18 @@
         name: python3-pip
         state: present
         update_cache: yes
+    
+    - name : Install tmux
+      apt:
+        name: tmux
+        state: present
+        update_cache: yes
+
+    - name : Install htop
+      apt:
+        name: htop
+        state: present
+        update_cache: yes
 
     - name : Install Flask
       pip:
@@ -57,13 +69,13 @@
         daemon_reload: yes
         name: flaskapp.service
     
-    - name: Enable a timer unit for dnf-automatic
+    - name: Enable flaskapp.service
       ansible.builtin.systemd:
         name: flaskapp.service
         state: started
         enabled: yes
     
-    - name: Make sure a service unit is running
+    - name: Make sure a service flaskapp.service is running
       ansible.builtin.systemd:
         state: started
         name: flaskapp.service
