@@ -32,6 +32,7 @@ resource "aws_security_group" "Project-SG" {
 resource "aws_instance" "ec2-instance" {
   ami           = var.ami_id
   key_name = var.key_name
+  user_data = "${file("setup_ec2.sh")}"
   instance_type = var.instance_type
   security_groups= [var.security_group]
   tags= {
