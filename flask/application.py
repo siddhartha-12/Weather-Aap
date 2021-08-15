@@ -73,5 +73,7 @@ def delete_city(name):
     return redirect(url_for('index'))
 
 
+if __name__=="__main__":
+    app.run()
 
 
