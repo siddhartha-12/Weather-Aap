@@ -1,11 +1,11 @@
 [Unit]
-Description=Python flask web app
+Description=Service to run flaskweb app
 After=multi-user.target
 
 [Service]
-WorkingDirectory=/var/flask-app/flask
-ExecStart=/usr/bin/python3 /var/flask-app/flask/app.py
-Type=idle
+Type=simple
+Restart=always
+ExecStart=/usr/bin/python3 /var/flask-app/flask/application.py
 
 [Install]
 WantedBy=multi-user.target
