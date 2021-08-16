@@ -1,7 +1,7 @@
 ---
 - name : Setup Application Environment
-  hosts: webserver
-  user: vagrant 
+  hosts: localhost
+  connection: local 
   become: True
   tasks:
     - name : Updating OS
@@ -82,6 +82,7 @@
       ansible.builtin.git:
         repo: https://github.com/siddhartha-12/Weather-App.git
         dest: /var/flask-app
+        force: yes
 
     - name: Create symbolic link 
       file:
@@ -99,7 +100,7 @@
       ansible.builtin.file:
         path: /var/flask-app/flask
         owner: www-data
-        
+
     - name: Copy site conf file(flask-app.conf)
       ansible.builtin.copy:
         src: /var/flask-app/flask/flask-app.conf
@@ -108,9 +109,13 @@
 
     - name: Disable default Apache site
       shell: /usr/sbin/a2dissite 000-default.conf
-      when: disable_default
       notify: Reload Apache
 
     - name: Enable new site
       shell: /usr/sbin/a2ensite flask-app.conf
       notify: Reload Apache
+
+  handlers:
+    - name: Reload Apache
+      shell: systemctl reload apache2
+      become: true
