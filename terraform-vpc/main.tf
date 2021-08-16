@@ -12,15 +12,15 @@ resource "aws_security_group" "Project-SG" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
-    ingress {
-    from_port   = 8080
-    to_port     = 8080
+  
+  ingress {
+    from_port   = 22
+    to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-      ingress {
+  ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -28,9 +28,9 @@ resource "aws_security_group" "Project-SG" {
   }
 
   ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "ssh"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -54,13 +54,3 @@ resource "aws_instance" "ec2-instance" {
     Name = var.tag_name
   }
 }
-
-# Create Elastic IP address
-resource "aws_eip" "instance" {
-  vpc      = true
-  instance = aws_instance.ec2-instance.id
-tags= {
-    Name = "project_elastic_ip"
-  }
-}
-
