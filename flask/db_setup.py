@@ -1,2 +1,2 @@
-from app import database
+from application import database
 database.create_all()
