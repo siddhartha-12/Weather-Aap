@@ -1,0 +1,113 @@
+---
+- hosts: localhost
+  connection: local
+  become_user: root
+  tasks: 
+  - name: get rid of old installation dir
+    file:
+      path: /tmp/nagios
+      state: absent
+    become: true
+  - name: get rid of semi-created installation dir
+    file:
+      path: /tmp/nagios-4.4.5
+      state: absent
+    become: true
+  - name: get rid of old installation archive
+    file:
+      path: /tmp/nagios.tar.gz
+      state: absent
+    become: true
+  - name: refresh apt
+    apt: 
+      name: '*'
+      update_cache: yes
+    become: true 
+  - name: install nagios reqs
+    apt:
+      name: 
+        - autoconf
+        - gcc
+        - libc6
+        - make
+        - wget
+        - unzip
+        - libssl-dev
+        - apache2
+        - php
+        - libapache2-mod-php*
+        - libgd-dev
+        - build-essential
+      state: latest
+      force: true
+      update_cache: true
+    become: true
+  - name: download and uncompress
+    shell: cd /tmp;rm nagios*.tar.gz;wget -O nagios.tar.gz --no-check-certificate https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.4.5.tar.gz;tar -zxf nagios.tar.gz;mv nagios-4.4.5 nagios
+    become: true
+  - name: configure and make all
+    shell: cd /tmp/nagios;./configure --with-mail=/usr/sbin/sendmail --with-httpd-conf=/etc/apache2/sites-enabled;make all;
+    become: true
+  - name: create users and groups
+    command: chdir=/tmp/nagios make install-groups-users
+    become: true
+  - name: create nagios user homedir
+    file:
+      path: /home/nagios
+      state: directory
+      owner: nagios
+      group: nagios
+      mode: 0775
+    become: true
+  - name: change nagios user home dir and add group members
+    command: "{{ item }}"
+    with_items: 
+      - usermod --home /home/nagios nagios
+      - usermod -a -G nagios www-data
+    become: true
+  - name: make binaries
+    command: chdir=/tmp/nagios {{ item }}
+    with_items:
+      - make install
+      - make install-daemoninit 
+      - make install-commandmode
+      - make install-config
+      - make install-webconf
+    become: true
+  - name: Enable apache2 modules
+    apache2_module: state=present name={{ item }}
+    with_items:
+      - cgi
+      - rewrite
+    become: true
+  - name: Restart Apache2 service
+    service:
+      name: apache2
+      state: restarted
+    become: true
+  - name: Create nagiosadmin User account (apache user)
+    command: htpasswd -cb /usr/local/nagios/etc/htpasswd.users nagiosadmin nagios
+    become: true
+  - name: Install nagios-plugins
+    apt:
+      name: nagios-plugins
+      state: latest
+      force: true
+      update_cache: true
+    become: true 
+  - name: Copy the files of plugins into libexec
+    shell: cp /usr/lib/nagios/plugins/check_*  /usr/local/nagios/libexec/
+    become: true
+  - name: change ownership and permisions
+    file:
+      path: /usr/local/nagios/libexec/eventhandlers/
+      owner: nagios
+      group: nagios
+      mode: u+rw,g+rw,o+r
+      recurse: true
+    become: true
+  - name: Start Nagios service
+    service:
+      name: nagios
+      state: restarted
+    become: true
